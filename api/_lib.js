@@ -1,19 +1,18 @@
 const crypto = require('crypto');
 
-const R_URL = process.env.UPSTASH_REDIS_REST_URL;
-const R_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const R_URL =
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.KV_REST_API_URL ||
+  process.env.STORAGE_REST_API_URL ||
+  process.env.STORAGE_KV_REST_API_URL;
+
+const R_TOKEN =
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.KV_REST_API_TOKEN ||
+  process.env.STORAGE_REST_API_TOKEN ||
+  process.env.STORAGE_KV_REST_API_TOKEN;
 
 async function redis(cmd) {
   const r = await fetch(R_URL, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${R_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(cmd),
-  });
-  const j = await r.json();
-  return j.result;
-}
-
-const sha = (v) =>
-  crypto.createHash('sha256').update(String(v).trim().toLowerCase()).digest('hex');
-
-module.exports = { redis, sha };
+    headers: { Authorization: `Bearer ${R_TOKEN}`, 'Content-Type': 'applicatio
